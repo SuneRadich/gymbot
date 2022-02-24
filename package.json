@@ -1,0 +1,24 @@
+{
+  "name": "gymbot",
+  "version": "1.0.0",
+  "description": "A DiscordJS bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SuneRadich/gymbot.git"
+  },
+  "keywords": [
+    "discord",
+    "bloowbowl",
+    "bot"
+  ],
+  "author": "Sune Radich Vestergaard",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SuneRadich/gymbot/issues"
+  },
+  "homepage": "https://github.com/SuneRadich/gymbot#readme"
+}
