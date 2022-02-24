@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/SuneRadich/gymbot/issues"
   },
-  "homepage": "https://github.com/SuneRadich/gymbot#readme"
+  "homepage": "https://github.com/SuneRadich/gymbot#readme",
+  "dependencies": {
+    "mongoose": "^6.2.3"
+  }
 }
