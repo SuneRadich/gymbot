@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
+    "latest": "node -r dotenv/config ./prod/database/latestMatch.js",
     "start": "node -r dotenv/config ./prod/index.js"
   },
   "repository": {
@@ -29,7 +30,8 @@
     "discord-api-types": "^0.27.2",
     "discord.js": "^13.6.0",
     "dotenv": "^16.0.0",
-    "mongoose": "^6.2.3"
+    "mongoose": "^6.2.3",
+    "nodejs-web-scraper": "^6.0.2"
   },
   "devDependencies": {
     "@types/node": "^17.0.21",
