@@ -1,5 +1,6 @@
 import { CollectContent, Root, Scraper } from 'nodejs-web-scraper';
 import { buildMatchReport, sendMatchReport } from '../modules/sendMatchReport';
+import { logger } from '../utils/logger';
 import { mapCols } from '../utils/mapCols';
 import MatchModel, { IGame, IMatch } from './models/MatchModel';
 
@@ -124,7 +125,7 @@ export const getCompetitionMatches = async () => {
         // console.log(`Match with id:${matchId} already in database`);
         matchData = null;
       } else {
-        console.log(`Match with id: ${matchId} not found in database, adding`);
+        logger.info(`Match with id: ${matchId} not found in database, adding`);
 
         // temp remove adding to db
         await MatchModel.create(matchData);
