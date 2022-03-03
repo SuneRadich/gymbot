@@ -77,6 +77,9 @@ const fetchMatchById = async (id: string): Promise<IGame | null> => {
   return toDb;
 };
 
+/**
+ * Fetch matches from GoblinSpy and store in DB
+ */
 export const getCompetitionMatches = async () => {
   const config = {
     baseSiteUrl: `https://www.mordrek.com:666/api/v1/queries?req=`,
