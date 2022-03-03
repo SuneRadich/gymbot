@@ -80,10 +80,12 @@ const fetchMatchById = async (id: string): Promise<IGame | null> => {
 /**
  * Fetch matches from GoblinSpy and store in DB
  */
-export const getCompetitionMatches = async () => {
+export const getCompetitionMatches = async (competitionId: number) => {
   const config = {
     baseSiteUrl: `https://www.mordrek.com:666/api/v1/queries?req=`,
-    startUrl: `https://www.mordrek.com:666/api/v1/queries?req={%22compResults%22:{%22id%22:%22compResults%22,%22idmap%22:{%22idcompetition%22:%2242122%22},%22filters%22:null,%22ordercol%22:%22finished%22,%22order%22:%22desc%22,%22limit%22:30,%22from%22:0,%22group%22:null,%22aggr%22:null}}`,
+    startUrl: `https://www.mordrek.com:666/api/v1/queries?req={%22compResults%22:{%22id%22:%22compResults%22,%22idmap%22:{%22idcompetition%22:%22${competitionId}%22},%22filters%22:null,%22ordercol%22:%22finished%22,%22order%22:%22desc%22,%22limit%22:30,%22from%22:0,%22group%22:null,%22aggr%22:null}}`,
+    concurrency: 5,
+    showConsoleLogs: false,
     //filePath: "./images/",
     //logPath: "./logs/",
   };
@@ -138,9 +140,3 @@ export const getCompetitionMatches = async () => {
 
   return null;
 };
-
-(async () => {
-  // fetch all competition matches, and store them in the database
-  await getCompetitionMatches();
-  // process.exit(0);
-})();
