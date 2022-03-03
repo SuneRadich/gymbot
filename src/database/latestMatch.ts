@@ -1,8 +1,8 @@
 import { CollectContent, Root, Scraper } from 'nodejs-web-scraper';
-import { sendMatchReport } from '../modules/sendMatchReport';
+import { buildMatchReport, sendMatchReport } from '../modules/sendMatchReport';
 import { mapCols } from '../utils/mapCols';
 import { connectDatabase } from './connectDatabase';
-import MatchModel, { IMatch } from './models/MatchModel';
+import MatchModel, { IGame, IMatch } from './models/MatchModel';
 
 /**
  * Check if a match (2 entries) exist in the database already
@@ -10,10 +10,10 @@ import MatchModel, { IMatch } from './models/MatchModel';
  * @param idmatch
  * @returns
  */
-const checkIfMatchExist = async (idmatch: string) => {
-  const result = await MatchModel.find({ idmatch }).limit(2).exec();
+const checkIfMatchExist = async (matchId: string) => {
+  const result = await MatchModel.find({ matchId }).limit(1).exec();
 
-  return result.length === 2;
+  return result.length === 1;
 };
 
 /**
@@ -21,7 +21,7 @@ const checkIfMatchExist = async (idmatch: string) => {
  * @param id
  * @returns
  */
-const fetchMatchById = async (id: string): Promise<IMatch[] | null> => {
+const fetchMatchById = async (id: string): Promise<IGame | null> => {
   console.log('Fetching by id', id);
   const config = {
     baseSiteUrl: `https://www.mordrek.com:666/api/v1/queries?req=`,
@@ -52,15 +52,29 @@ const fetchMatchById = async (id: string): Promise<IMatch[] | null> => {
   const parsed = JSON.parse(scrapedData.data[0].data);
   const matchData = parsed.response.matchTeams.result;
 
-  console.log('matchData', matchData);
-
   const { cols, rows } = matchData;
 
   const result = rows.map((row: string[]) => {
     return mapCols(cols, row);
   });
 
-  return result;
+  let toDb: IGame = {
+    finished: result[0].finished,
+    competitionId: result[0].idcompetition,
+    matchId: result[0].idmatch,
+    home: null,
+    away: null,
+  } as IGame;
+
+  if (result[0].home === '1') {
+    toDb.home = result[0] as IMatch;
+    toDb.away = result[1] as IMatch;
+  } else {
+    toDb.home = result[1] as IMatch;
+    toDb.away = result[0] as IMatch;
+  }
+
+  return toDb;
 };
 
 export const getCompetitionMatches = async () => {
@@ -101,17 +115,20 @@ export const getCompetitionMatches = async () => {
       // Store the match data
       let matchData = await fetchMatchById(matchId);
 
+      //console.log('matchdata to save', matchData);
       // check if the match id already exist in the database
       if (await checkIfMatchExist(matchId)) {
         // We already have it, no need to add again
-        //console.log(`Match with id:${matchId} already in database`);
+        // console.log(`Match with id:${matchId} already in database`);
         matchData = null;
       } else {
-        // temp remove adding to db
-        //await MatchModel.create(matchData);
+        console.log(`Match with id: ${matchId} not found in database, adding`);
 
-        console.log('its not here!', matchId);
-        sendMatchReport(matchData);
+        // temp remove adding to db
+        await MatchModel.create(matchData);
+
+        const report = await buildMatchReport(matchData);
+        sendMatchReport(report);
         //console.log('We should show message in chat for', matchData[0].idmatch);
       }
     })
@@ -125,5 +142,5 @@ export const getCompetitionMatches = async () => {
   await connectDatabase();
   // fetch all competition matches, and store them in the database
   await getCompetitionMatches();
-  process.exit(0);
+  // process.exit(0);
 })();

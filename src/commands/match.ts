@@ -1,8 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { MessageEmbed } from 'discord.js';
 import { ICommand } from '../interfaces/Command';
 import { getLatestMatchData } from '../modules/getLatestMatchData';
-import { sendMatchReport } from '../modules/sendMatchReport';
+import { buildMatchReport } from '../modules/sendMatchReport';
 
 export const match: ICommand = {
   data: new SlashCommandBuilder()
@@ -13,13 +12,10 @@ export const match: ICommand = {
 
     const matchData = await getLatestMatchData();
 
-    console.log('Latest match data', matchData);
-    const message = new MessageEmbed();
+    if (matchData && matchData.length > 0) {
+      const report = await buildMatchReport(matchData[0]);
 
-    if (matchData) {
-      sendMatchReport(matchData);
-
-      await interaction.editReply({ embeds: [message] });
+      await interaction.editReply({ embeds: [report] });
     }
   },
 };
