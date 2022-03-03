@@ -66,7 +66,9 @@ export const buildMatchReport = async (result: IGame) => {
     )
     */
     .setTitle(
-      `${homeTeam} ${getLogo(homeLogo)} vs ${getLogo(awayLogo)} ${awayTeam}`
+      `${homeTeam} ${getLogo(homeLogo || 'Ai_01')} vs ${getLogo(
+        awayLogo || 'Ai_01'
+      )} ${awayTeam}`
     )
     .setURL(
       `https://www.mordrek.com/gspy/comp/${competitionId}/match/${matchId}`
