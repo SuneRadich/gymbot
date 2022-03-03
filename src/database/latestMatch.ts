@@ -26,6 +26,7 @@ const fetchMatchById = async (id: string): Promise<IGame | null> => {
   const config = {
     baseSiteUrl: `https://www.mordrek.com:666/api/v1/queries?req=`,
     startUrl: `https://www.mordrek.com:666/api/v1/queries?req={%22matchTeams%22:{%22id%22:%22matchTeams%22,%22idmap%22:{%22idmatch%22:%22${id}%22},%22filters%22:null,%22ordercol%22:%22home%22,%22order%22:%22asc%22,%22limit%22:50,%22from%22:0,%22group%22:null,%22aggr%22:null}}`,
+    showConsoleLogs: false,
     //filePath: "./images/",
     //logPath: "./logs/",
   };
