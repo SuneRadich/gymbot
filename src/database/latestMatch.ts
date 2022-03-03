@@ -1,7 +1,6 @@
 import { CollectContent, Root, Scraper } from 'nodejs-web-scraper';
 import { buildMatchReport, sendMatchReport } from '../modules/sendMatchReport';
 import { mapCols } from '../utils/mapCols';
-import { connectDatabase } from './connectDatabase';
 import MatchModel, { IGame, IMatch } from './models/MatchModel';
 
 /**
@@ -132,7 +131,6 @@ export const getCompetitionMatches = async () => {
 
         const report = await buildMatchReport(matchData);
         sendMatchReport(report);
-        //console.log('We should show message in chat for', matchData[0].idmatch);
       }
     })
   );
@@ -141,8 +139,6 @@ export const getCompetitionMatches = async () => {
 };
 
 (async () => {
-  // Make sure we have a database connection
-  await connectDatabase();
   // fetch all competition matches, and store them in the database
   await getCompetitionMatches();
   // process.exit(0);
