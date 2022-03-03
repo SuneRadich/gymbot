@@ -6,11 +6,14 @@ import { onInteraction } from './events/onInteraction';
 import { onReady } from './events/onReady';
 import { validateEnv } from './utils/validateEnv';
 
+// Create a new client instance
+//export const client = new Client({ intents: IntentOptions });
+export const client = new Client({
+  intents: IntentOptions,
+});
+
 (async () => {
   if (!validateEnv()) return;
-
-  // Create a new client instance
-  const client = new Client({ intents: IntentOptions });
 
   // When the client is ready, run this code (only once)
   client.once('ready', async () => onReady(client));
@@ -20,7 +23,7 @@ import { validateEnv } from './utils/validateEnv';
   });
 
   client.on('debug', (info) => {
-    console.log('DEBUG', info);
+    // console.log('DEBUG', info);
   });
 
   client.on(

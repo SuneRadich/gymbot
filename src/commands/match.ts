@@ -2,6 +2,7 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import { MessageEmbed } from 'discord.js';
 import { ICommand } from '../interfaces/Command';
 import { getLatestMatchData } from '../modules/getLatestMatchData';
+import { sendMatchReport } from '../modules/sendMatchReport';
 
 export const match: ICommand = {
   data: new SlashCommandBuilder()
@@ -12,10 +13,11 @@ export const match: ICommand = {
 
     const matchData = await getLatestMatchData();
 
+    console.log('Latest match data', matchData);
     const message = new MessageEmbed();
 
     if (matchData) {
-      message.setTitle(`${matchData?.coach_name}`);
+      sendMatchReport(matchData);
 
       await interaction.editReply({ embeds: [message] });
     }

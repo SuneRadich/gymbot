@@ -1,7 +1,8 @@
 import { CollectContent, Root, Scraper } from 'nodejs-web-scraper';
+import { sendMatchReport } from '../modules/sendMatchReport';
 import { mapCols } from '../utils/mapCols';
 import { connectDatabase } from './connectDatabase';
-import MatchModel from './models/MatchModel';
+import MatchModel, { IMatch } from './models/MatchModel';
 
 /**
  * Check if a match (2 entries) exist in the database already
@@ -20,7 +21,7 @@ const checkIfMatchExist = async (idmatch: string) => {
  * @param id
  * @returns
  */
-const fetchMatchById = async (id: string) => {
+const fetchMatchById = async (id: string): Promise<IMatch[] | null> => {
   console.log('Fetching by id', id);
   const config = {
     baseSiteUrl: `https://www.mordrek.com:666/api/v1/queries?req=`,
@@ -50,6 +51,8 @@ const fetchMatchById = async (id: string) => {
   const scrapedData = root.getData();
   const parsed = JSON.parse(scrapedData.data[0].data);
   const matchData = parsed.response.matchTeams.result;
+
+  console.log('matchData', matchData);
 
   const { cols, rows } = matchData;
 
@@ -91,7 +94,7 @@ export const getCompetitionMatches = async () => {
   const matchOverview = parsed.response.compResults.result.rows;
 
   await Promise.all(
-    matchOverview.map(async (match: any) => {
+    matchOverview.map(async (match: any[]) => {
       // We know the first row item is the match Id
       const matchId = match[0];
 
@@ -101,11 +104,15 @@ export const getCompetitionMatches = async () => {
       // check if the match id already exist in the database
       if (await checkIfMatchExist(matchId)) {
         // We already have it, no need to add again
-        console.log(`Match with id:${matchId} already in database`);
+        //console.log(`Match with id:${matchId} already in database`);
         matchData = null;
       } else {
-        await MatchModel.create(matchData);
-        console.log('We should show message in chat for', matchData[0].idmatch);
+        // temp remove adding to db
+        //await MatchModel.create(matchData);
+
+        console.log('its not here!', matchId);
+        sendMatchReport(matchData);
+        //console.log('We should show message in chat for', matchData[0].idmatch);
       }
     })
   );
