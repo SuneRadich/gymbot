@@ -15,7 +15,7 @@ export const getStandings = async () => {
    * team name
    */
   const padAllTeamNames = (data: IStanding[]) => {
-    var longest = data.reduce(function (a, b) {
+    const longest = data.reduce(function (a, b) {
       return a.team_name.length > b.team_name.length ? a : b;
     });
 

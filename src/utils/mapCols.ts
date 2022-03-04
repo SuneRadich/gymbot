@@ -11,7 +11,7 @@ export const mapCols = (cols: Cols, row: string[]) => {
   const len = Object.keys(cols).length;
 
   // prepare object to return
-  let res: Result = {};
+  const res: Result = {};
 
   // Loop over each column property
   for (let i = 0; i < len; i++) {

@@ -1,5 +1,5 @@
 import { CollectContent, Root, Scraper } from 'nodejs-web-scraper';
-import { client } from '..';
+import { client } from '../index';
 import { logger } from '../utils/logger';
 import StandingsModel, { IStanding } from './models/StandingsModel';
 
@@ -22,12 +22,12 @@ export const fetchStandings = async (competitionId: number) => {
   const data = new CollectContent('body', {
     name: 'data',
     contentType: 'text',
-    getElementList: (elementList, pageAddress) => {
-      //console.log("elmlist", elementList, pageAddress);
-    },
-    getElementContent: (elementContentString, pageAddress) => {
-      //console.log(elementContentString);
-    },
+    //getElementList: (elementList, pageAddress) => {
+    //console.log("elmlist", elementList, pageAddress);
+    //},
+    //getElementContent: (elementContentString, pageAddress) => {
+    //console.log(elementContentString);
+    //},
   });
 
   root.addOperation(data);
@@ -38,8 +38,8 @@ export const fetchStandings = async (competitionId: number) => {
   const parsed = JSON.parse(scrapedData.data[0].data);
   const standings = parsed.response.compStandings.result;
 
-  const formatData = (data): IStanding[] => {
-    return data.rows.map((res) => {
+  const formatData = (data: any): IStanding[] => {
+    return data.rows.map((res: any) => {
       const [
         idstanding,
         idcompetition,

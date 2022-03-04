@@ -2,7 +2,7 @@ import { getCompetitionMatches } from '../database/latestMatch';
 import { logger } from '../utils/logger';
 
 /** Interval */
-let fetcher = null;
+let fetcher: NodeJS.Timer | null = null;
 
 // 30 minutes
 const interval = 60 * 30 * 1000;
