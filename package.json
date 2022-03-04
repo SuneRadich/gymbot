@@ -8,7 +8,8 @@
     "build": "tsc",
     "latest": "node -r dotenv/config ./prod/database/latestMatch.js",
     "start": "node -r dotenv/config ./prod/index.js",
-    "logo": "node -r dotenv/config  ./prod/database/updateLogos.js"
+    "logo": "node -r dotenv/config  ./prod/database/updateLogos.js",
+    "standings": "node -r dotenv/config  ./prod/database/standings.js"
   },
   "repository": {
     "type": "git",
