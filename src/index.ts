@@ -4,10 +4,10 @@ import { IntentOptions } from './config/IntentOptions';
 import { connectDatabase } from './database/connectDatabase';
 import { onInteraction } from './events/onInteraction';
 import { onReady } from './events/onReady';
+import { logger } from './utils/logger';
 import { validateEnv } from './utils/validateEnv';
 
 // Create a new client instance
-//export const client = new Client({ intents: IntentOptions });
 export const client = new Client({
   intents: IntentOptions,
 });
@@ -19,7 +19,7 @@ export const client = new Client({
   client.once('ready', async () => onReady(client));
 
   client.on('error', (err) => {
-    console.log('ERROR', err);
+    logger.error(err);
   });
 
   client.on('debug', (info) => {

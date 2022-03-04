@@ -1,7 +1,9 @@
 import { CollectContent, Root, Scraper } from 'nodejs-web-scraper';
 import { buildMatchReport, sendMatchReport } from '../modules/sendMatchReport';
+import { logger } from '../utils/logger';
 import { mapCols } from '../utils/mapCols';
 import MatchModel, { IGame, IMatch } from './models/MatchModel';
+import { fetchStandings } from './standings';
 
 /**
  * Check if a match (2 entries) exist in the database already
@@ -21,10 +23,10 @@ const checkIfMatchExist = async (matchId: string) => {
  * @returns
  */
 const fetchMatchById = async (id: string): Promise<IGame | null> => {
-  console.log('Fetching by id', id);
   const config = {
     baseSiteUrl: `https://www.mordrek.com:666/api/v1/queries?req=`,
     startUrl: `https://www.mordrek.com:666/api/v1/queries?req={%22matchTeams%22:{%22id%22:%22matchTeams%22,%22idmap%22:{%22idmatch%22:%22${id}%22},%22filters%22:null,%22ordercol%22:%22home%22,%22order%22:%22asc%22,%22limit%22:50,%22from%22:0,%22group%22:null,%22aggr%22:null}}`,
+    showConsoleLogs: false,
     //filePath: "./images/",
     //logPath: "./logs/",
   };
@@ -79,10 +81,14 @@ const fetchMatchById = async (id: string): Promise<IGame | null> => {
 /**
  * Fetch matches from GoblinSpy and store in DB
  */
-export const getCompetitionMatches = async () => {
+export const getCompetitionMatches = async (competitionId: number) => {
+  let foundNewMatches = false;
+
   const config = {
     baseSiteUrl: `https://www.mordrek.com:666/api/v1/queries?req=`,
-    startUrl: `https://www.mordrek.com:666/api/v1/queries?req={%22compResults%22:{%22id%22:%22compResults%22,%22idmap%22:{%22idcompetition%22:%2242122%22},%22filters%22:null,%22ordercol%22:%22finished%22,%22order%22:%22desc%22,%22limit%22:30,%22from%22:0,%22group%22:null,%22aggr%22:null}}`,
+    startUrl: `https://www.mordrek.com:666/api/v1/queries?req={%22compResults%22:{%22id%22:%22compResults%22,%22idmap%22:{%22idcompetition%22:%22${competitionId}%22},%22filters%22:null,%22ordercol%22:%22finished%22,%22order%22:%22desc%22,%22limit%22:30,%22from%22:0,%22group%22:null,%22aggr%22:null}}`,
+    concurrency: 5,
+    showConsoleLogs: false,
     //filePath: "./images/",
     //logPath: "./logs/",
   };
@@ -117,29 +123,33 @@ export const getCompetitionMatches = async () => {
       // Store the match data
       let matchData = await fetchMatchById(matchId);
 
-      //console.log('matchdata to save', matchData);
       // check if the match id already exist in the database
       if (await checkIfMatchExist(matchId)) {
         // We already have it, no need to add again
-        // console.log(`Match with id:${matchId} already in database`);
         matchData = null;
       } else {
-        console.log(`Match with id: ${matchId} not found in database, adding`);
+        logger.info(`Match with id: ${matchId} not found in database, adding`);
 
-        // temp remove adding to db
+        foundNewMatches = true;
+
+        // Add new match to db
         await MatchModel.create(matchData);
 
+        // Show the match in the chat
         const report = await buildMatchReport(matchData);
         sendMatchReport(report);
       }
     })
   );
 
+  if (foundNewMatches) {
+    // We just added new matches, so fetch updated standings
+    fetchStandings(competitionId);
+  }
+
   return null;
 };
 
 (async () => {
-  // fetch all competition matches, and store them in the database
-  await getCompetitionMatches();
-  // process.exit(0);
+  await getCompetitionMatches(42122);
 })();

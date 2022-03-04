@@ -3,6 +3,7 @@ import { Routes } from 'discord-api-types/v9';
 import { Client } from 'discord.js';
 import { CommandList } from '../commands/_CommandList';
 import * as NewGames from '../cron/newGames';
+import { logger } from '../utils/logger';
 
 export const onReady = async (client: Client) => {
   const rest = new REST({ version: '9' }).setToken(
@@ -19,7 +20,7 @@ export const onReady = async (client: Client) => {
     { body: commandData }
   );
 
-  console.log('Discord ready!');
+  logger.info('Discord ready!');
 
   // Start loop to look for new played matches
   NewGames.startFetcher();
