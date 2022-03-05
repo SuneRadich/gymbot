@@ -1,6 +1,7 @@
 import fetch from 'node-fetch';
 import { ICompetitionResponse } from '../interfaces/CompetitionResponse';
 import { IMatchResponse } from '../interfaces/MatchResponse';
+import { Result } from '../interfaces/Result';
 import { buildMatchReport, sendMatchReport } from '../modules/sendMatchReport';
 import { logger } from '../utils/logger';
 import { mapCols } from '../utils/mapCols';
@@ -21,11 +22,11 @@ const checkIfMatchExist = async (matchId: string) => {
 
 /**
  * Given an id, fetch the match details for that match
- * @param id
+ * @param matchId
  * @returns
  */
-const fetchMatchById = async (id: string): Promise<IGame | null> => {
-  const url = `https://www.mordrek.com:666/api/v1/queries?req={%22matchTeams%22:{%22id%22:%22matchTeams%22,%22idmap%22:{%22idmatch%22:%22${id}%22},%22filters%22:null,%22ordercol%22:%22home%22,%22order%22:%22asc%22,%22limit%22:50,%22from%22:0,%22group%22:null,%22aggr%22:null}}`;
+const fetchMatchById = async (matchId: string): Promise<IGame | null> => {
+  const url = `https://www.mordrek.com:666/api/v1/queries?req={%22matchTeams%22:{%22id%22:%22matchTeams%22,%22idmap%22:{%22idmatch%22:%22${matchId}%22},%22filters%22:null,%22ordercol%22:%22home%22,%22order%22:%22asc%22,%22limit%22:50,%22from%22:0,%22group%22:null,%22aggr%22:null}}`;
 
   const response = await fetch(url);
   const data = (await response.json()) as IMatchResponse;
@@ -34,7 +35,7 @@ const fetchMatchById = async (id: string): Promise<IGame | null> => {
 
   const { cols, rows } = matchData;
 
-  const result = rows.map((row: string[]) => {
+  const result = rows.map((row: Result) => {
     return mapCols(cols, row);
   });
 

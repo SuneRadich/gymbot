@@ -1,6 +1,7 @@
 import { Document, model, Schema } from 'mongoose';
+import { Result } from '../../interfaces/Result';
 
-export interface IMatch {
+export interface IMatch extends Result {
   idteammatchstat: string;
   home: string;
   td: string;
