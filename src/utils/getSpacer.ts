@@ -15,7 +15,7 @@ export const getSpacer = (arr: any[], prop: string, offset: number) => {
 
   const spacerArray = new Array(spacerLength);
 
-  [...spacerArray].forEach((char) => {
+  [...spacerArray].forEach(() => {
     spacer += ' ';
   });
 

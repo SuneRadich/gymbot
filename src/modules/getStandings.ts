@@ -28,7 +28,7 @@ export const getStandings = async () => {
 
         let spacer = '';
 
-        [...spacerLength].forEach((char) => {
+        [...spacerLength].forEach(() => {
           spacer += ' ';
         });
         row.team_name += spacer;
