@@ -12,13 +12,22 @@ export const onReady = async (client: Client) => {
 
   const commandData = CommandList.map((command) => command.data.toJSON());
 
+  // Register guild specific slash commands
+  // these commands register immidiately, and is available for testing
   await rest.put(
+    // @see https://discordjs.guide/interactions/slash-commands.html#guild-commands
+    //Routes.applicationCommand(
     Routes.applicationGuildCommands(
       client.user?.id || 'missing id',
       process.env.GUILD_ID as string
     ),
     { body: commandData }
   );
+
+  // Register global slash commands, these update slowly, up to an hour
+  await rest.put(Routes.applicationCommands(process.env.CLIENT_ID as string), {
+    body: commandData,
+  });
 
   logger.info('Discord ready!');
 
