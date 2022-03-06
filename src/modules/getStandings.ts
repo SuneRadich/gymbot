@@ -1,10 +1,19 @@
 import StandingsModel, { IStanding } from '../database/models/StandingsModel';
+import { fetchStandings } from '../database/standings';
 import { trimTeamName } from '../utils/trimTeamName';
 
 export const getStandings = async () => {
+  console.log('getting standings');
   // Retrieve all standings, sorted by position
-  const result = await StandingsModel.find({}).sort('position');
+  let result = await StandingsModel.find({}).sort('position');
 
+  // nothing in the database
+  if (result.length === 0) {
+    // fetch data
+    await fetchStandings(42122);
+    // and select it again from the DB
+    result = await StandingsModel.find({}).sort('position');
+  }
   // Trim all team names to remove trailing whitespace
   result.forEach((row) => {
     row.team_name = trimTeamName(row.team_name);
