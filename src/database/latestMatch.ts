@@ -108,6 +108,8 @@ export const getCompetitionMatches = async (competitionId: number) => {
   return null;
 };
 
+/*
 (async () => {
   await getCompetitionMatches(42122);
 })();
+*/

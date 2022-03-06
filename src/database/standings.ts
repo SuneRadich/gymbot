@@ -32,5 +32,6 @@ export const fetchStandings = async (competitionId: number) => {
 
   return standings;
 };
-
+/*
 (async () => await fetchStandings(42122))();
+*/
