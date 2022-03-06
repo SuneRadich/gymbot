@@ -8,12 +8,15 @@ interface Idmap {
 interface Request {
   id: string;
   idmap: Idmap;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   filters?: any;
   ordercol: string;
   order: string;
   limit: number;
   from: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   group?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   aggr?: any;
 }
 
@@ -49,11 +52,13 @@ export interface StandingsCols extends Cols {
 }
 
 interface StandingsResult {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fileData?: any;
   cols: StandingsCols;
   rows: Result[];
   affected: number;
   timeMs: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   error?: any;
   success: boolean;
   from: number;

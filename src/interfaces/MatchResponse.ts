@@ -7,12 +7,15 @@ export interface Idmap {
 export interface Request {
   id: string;
   idmap: Idmap;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   filters?: any;
   ordercol: string;
   order: string;
   limit: number;
   from: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   group?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   aggr?: any;
 }
 export interface MatchCols extends Cols {
@@ -117,11 +120,13 @@ export interface MatchCols extends Cols {
 }
 
 export interface MatchResult {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fileData?: any;
   cols: Cols;
   rows: Result[];
   affected: number;
   timeMs: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   error?: any;
   success: boolean;
   from: number;
