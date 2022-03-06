@@ -4,6 +4,8 @@ import { logger } from '../utils/logger';
 /** Interval */
 let fetcher: NodeJS.Timer | null = null;
 
+const competitionId = 46302;
+
 // 30 minutes
 const interval = 60 * 30 * 1000;
 
@@ -11,14 +13,14 @@ const interval = 60 * 30 * 1000;
 export const startFetcher = async () => {
   logger.info(`Started fetching new match loop`);
 
-  // Can be enalbed to force fetching data on bot start
+  // Can be enabled to force fetching data on bot start
   // should be replaced by a slash admin command
-  //await getCompetitionMatches(42122);
+  //await getCompetitionMatches(competitionId);
 
   fetcher = setInterval(async () => {
-    logger.info(`Fetching competition matchs for competition ${42122}`);
+    logger.info(`Fetching competition matchs for competition ${competitionId}`);
     // fetch all competition matches, and store them in the database
-    await getCompetitionMatches(42122);
+    await getCompetitionMatches(competitionId);
   }, interval);
 };
 

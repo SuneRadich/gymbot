@@ -10,7 +10,7 @@ export const getStandings = async () => {
   // nothing in the database
   if (result.length === 0) {
     // fetch data
-    await fetchStandings(42122);
+    await fetchStandings(46302);
     // and select it again from the DB
     result = await StandingsModel.find({}).sort('position');
   }

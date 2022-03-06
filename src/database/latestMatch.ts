@@ -64,7 +64,7 @@ const fetchMatchById = async (matchId: string): Promise<IGame | null> => {
 export const getCompetitionMatches = async (competitionId: number) => {
   let foundNewMatches = false;
 
-  competitionId = 42122;
+  competitionId = 46302; //42122;
 
   const url = `https://www.mordrek.com:666/api/v1/queries?req={%22compResults%22:{%22id%22:%22compResults%22,%22idmap%22:{%22idcompetition%22:%22${competitionId}%22},%22filters%22:null,%22ordercol%22:%22finished%22,%22order%22:%22desc%22,%22limit%22:30,%22from%22:0,%22group%22:null,%22aggr%22:null}}`;
 
@@ -110,6 +110,6 @@ export const getCompetitionMatches = async (competitionId: number) => {
 
 /*
 (async () => {
-  await getCompetitionMatches(42122);
+  await getCompetitionMatches(46302);
 })();
 */

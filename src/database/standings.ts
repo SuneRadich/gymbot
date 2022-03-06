@@ -9,7 +9,7 @@ import StandingsModel from './models/StandingsModel';
 client;
 export const fetchStandings = async (competitionId: number) => {
   // TODO
-  competitionId = 42122;
+  competitionId = 46302; //42122;
 
   const url = `https://www.mordrek.com:666/api/v1/queries?req={%22compStandings%22:{%22id%22:%22compStandings%22,%22idmap%22:{%22idcompetition%22:%22${competitionId}%22}}}`;
 
@@ -35,5 +35,5 @@ export const fetchStandings = async (competitionId: number) => {
   return standings;
 };
 /*
-(async () => await fetchStandings(42122))();
+(async () => await fetchStandings(46302))();
 */
