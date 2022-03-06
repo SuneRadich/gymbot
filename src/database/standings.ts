@@ -25,10 +25,12 @@ export const fetchStandings = async (competitionId: number) => {
   await StandingsModel.deleteMany({});
 
   // Add each row in the standings to the database
-  standings.map(async (standing) => {
-    logger.info(`Added standings for ${standing.team_name}`);
-    await StandingsModel.create(standing);
-  });
+  await Promise.all(
+    standings.map(async (standing) => {
+      logger.info(`Added standings for ${standing.team_name}`);
+      await StandingsModel.create(standing);
+    })
+  );
 
   return standings;
 };
