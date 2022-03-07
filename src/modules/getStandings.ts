@@ -3,7 +3,6 @@ import { fetchStandings } from '../database/standings';
 import { trimTeamName } from '../utils/trimTeamName';
 
 export const getStandings = async () => {
-  console.log('getting standings');
   // Retrieve all standings, sorted by position
   let result = await StandingsModel.find({}).sort('position');
 
