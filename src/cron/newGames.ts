@@ -18,7 +18,9 @@ export const startFetcher = async () => {
   //await getCompetitionMatches(competitionId);
 
   fetcher = setInterval(async () => {
-    logger.info(`Fetching competition matchs for competition ${competitionId}`);
+    logger.info(
+      `Fetching competition matches for competition ${competitionId}`
+    );
     // fetch all competition matches, and store them in the database
     await getCompetitionMatches(competitionId);
   }, interval);
