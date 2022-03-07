@@ -20,10 +20,14 @@ export const sendMatchReport = async (embed: MessageEmbed) => {
   channel?.send({ embeds: [embed] });
 };
 
-export const buildMatchReport = async (result: IGame) => {
+export const buildMatchReport = async (result: IGame | null) => {
   if (!result) return;
 
   const { home, away, matchId, competitionId, finished } = result;
+
+  if (!(home && away)) {
+    return;
+  }
 
   const buildMarkup = () => {
     return `

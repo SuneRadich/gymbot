@@ -4,4 +4,4 @@ config.json
 node_modules/
 
 # The build output folder
-prod/
+dist/

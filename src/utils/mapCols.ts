@@ -1,17 +1,12 @@
-interface Cols {
-  [key: string]: number;
-}
+import { Cols } from '../interfaces/Cols';
+import { Result } from '../interfaces/Result';
 
-interface Result {
-  [key: string]: string;
-}
-
-export const mapCols = (cols: Cols, row: string[]) => {
+export const mapCols = (cols: Cols, row: Result) => {
   // Get the number of columns
   const len = Object.keys(cols).length;
 
   // prepare object to return
-  let res: Result = {};
+  const res: Result = {};
 
   // Loop over each column property
   for (let i = 0; i < len; i++) {

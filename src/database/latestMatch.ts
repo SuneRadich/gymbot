@@ -1,4 +1,7 @@
-import { CollectContent, Root, Scraper } from 'nodejs-web-scraper';
+import fetch from 'node-fetch';
+import { ICompetitionResponse } from '../interfaces/CompetitionResponse';
+import { IMatchResponse } from '../interfaces/MatchResponse';
+import { Result } from '../interfaces/Result';
 import { buildMatchReport, sendMatchReport } from '../modules/sendMatchReport';
 import { logger } from '../utils/logger';
 import { mapCols } from '../utils/mapCols';
@@ -19,47 +22,24 @@ const checkIfMatchExist = async (matchId: string) => {
 
 /**
  * Given an id, fetch the match details for that match
- * @param id
+ * @param matchId
  * @returns
  */
-const fetchMatchById = async (id: string): Promise<IGame | null> => {
-  const config = {
-    baseSiteUrl: `https://www.mordrek.com:666/api/v1/queries?req=`,
-    startUrl: `https://www.mordrek.com:666/api/v1/queries?req={%22matchTeams%22:{%22id%22:%22matchTeams%22,%22idmap%22:{%22idmatch%22:%22${id}%22},%22filters%22:null,%22ordercol%22:%22home%22,%22order%22:%22asc%22,%22limit%22:50,%22from%22:0,%22group%22:null,%22aggr%22:null}}`,
-    showConsoleLogs: false,
-    //filePath: "./images/",
-    //logPath: "./logs/",
-  };
+const fetchMatchById = async (matchId: string): Promise<IGame | null> => {
+  const url = `https://www.mordrek.com:666/api/v1/queries?req={%22matchTeams%22:{%22id%22:%22matchTeams%22,%22idmap%22:{%22idmatch%22:%22${matchId}%22},%22filters%22:null,%22ordercol%22:%22home%22,%22order%22:%22asc%22,%22limit%22:50,%22from%22:0,%22group%22:null,%22aggr%22:null}}`;
 
-  const scraper = new Scraper(config);
-  const root = new Root();
+  const response = await fetch(url);
+  const data = (await response.json()) as IMatchResponse;
 
-  const data = new CollectContent('body', {
-    name: 'data',
-    contentType: 'text',
-    //getElementList: (elementList, pageAddress) => {
-    //console.log("elmlist", elementList, pageAddress);
-    //},
-    //getElementContent: (elementContentString, pageAddress) => {
-    //console.log(elementContentString);
-    //},
-  });
-
-  root.addOperation(data);
-
-  await scraper.scrape(root);
-
-  const scrapedData = root.getData();
-  const parsed = JSON.parse(scrapedData.data[0].data);
-  const matchData = parsed.response.matchTeams.result;
+  const matchData = data.response.matchTeams.result;
 
   const { cols, rows } = matchData;
 
-  const result = rows.map((row: string[]) => {
+  const result = rows.map((row: Result) => {
     return mapCols(cols, row);
   });
 
-  let toDb: IGame = {
+  const toDb: IGame = {
     finished: result[0].finished,
     competitionId: result[0].idcompetition,
     matchId: result[0].idmatch,
@@ -84,36 +64,14 @@ const fetchMatchById = async (id: string): Promise<IGame | null> => {
 export const getCompetitionMatches = async (competitionId: number) => {
   let foundNewMatches = false;
 
-  const config = {
-    baseSiteUrl: `https://www.mordrek.com:666/api/v1/queries?req=`,
-    startUrl: `https://www.mordrek.com:666/api/v1/queries?req={%22compResults%22:{%22id%22:%22compResults%22,%22idmap%22:{%22idcompetition%22:%22${competitionId}%22},%22filters%22:null,%22ordercol%22:%22finished%22,%22order%22:%22desc%22,%22limit%22:30,%22from%22:0,%22group%22:null,%22aggr%22:null}}`,
-    concurrency: 5,
-    showConsoleLogs: false,
-    //filePath: "./images/",
-    //logPath: "./logs/",
-  };
+  competitionId = 46302; //42122;
 
-  const scraper = new Scraper(config);
-  const root = new Root();
+  const url = `https://www.mordrek.com:666/api/v1/queries?req={%22compResults%22:{%22id%22:%22compResults%22,%22idmap%22:{%22idcompetition%22:%22${competitionId}%22},%22filters%22:null,%22ordercol%22:%22finished%22,%22order%22:%22desc%22,%22limit%22:30,%22from%22:0,%22group%22:null,%22aggr%22:null}}`;
 
-  const data = new CollectContent('body', {
-    name: 'data',
-    contentType: 'text',
-    //getElementList: (elementList, pageAddress) => {
-    //console.log("elmlist", elementList, pageAddress);
-    //},
-    //getElementContent: (elementContentString, pageAddress) => {
-    //console.log(elementContentString);
-    //},
-  });
+  const response = await fetch(url);
+  const data = (await response.json()) as ICompetitionResponse;
 
-  root.addOperation(data);
-
-  await scraper.scrape(root);
-
-  const scrapedData = root.getData();
-  const parsed = JSON.parse(scrapedData.data[0].data);
-  const matchOverview = parsed.response.compResults.result.rows;
+  const matchOverview = data.response.compResults.result.rows;
 
   await Promise.all(
     matchOverview.map(async (match: any[]) => {
@@ -137,7 +95,7 @@ export const getCompetitionMatches = async (competitionId: number) => {
 
         // Show the match in the chat
         const report = await buildMatchReport(matchData);
-        sendMatchReport(report);
+        report ? sendMatchReport(report) : logger.error('No report to send');
       }
     })
   );
@@ -150,6 +108,8 @@ export const getCompetitionMatches = async (competitionId: number) => {
   return null;
 };
 
+/*
 (async () => {
-  await getCompetitionMatches(42122);
+  await getCompetitionMatches(46302);
 })();
+*/

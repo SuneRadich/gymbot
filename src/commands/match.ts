@@ -15,7 +15,9 @@ export const match: ICommand = {
     if (matchData && matchData.length > 0) {
       const report = await buildMatchReport(matchData[0]);
 
-      await interaction.editReply({ embeds: [report] });
+      if (report) {
+        await interaction.editReply({ embeds: [report] });
+      }
     }
   },
 };
