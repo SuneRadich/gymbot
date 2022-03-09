@@ -50,7 +50,7 @@ export const latest: ICommand = {
       // prettier-ignore
       .addField(
         `Standings for ${season}`,
-        `\`\`\`ml
+        `\`\`\`hy
 Pos Team${getSpacer(standings, 'team_name', 4)} Pts Win Draw Loss
 ${markup.join('')}\`\`\``
       );
