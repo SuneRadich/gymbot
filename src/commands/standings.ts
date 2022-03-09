@@ -23,7 +23,9 @@ export const latest: ICommand = {
 
     if (!channelCompetition) {
       logger.error(`No competition registered for this channel!`);
-      await interaction.editReply('hest');
+      await interaction.editReply(
+        'No competition registered, use /competition <GoblinSpyCompetitionID> to do so'
+      );
       return;
     }
 
