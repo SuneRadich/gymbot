@@ -1,15 +1,15 @@
 import fetch from 'node-fetch';
-import { client } from '../index';
 import { Result } from '../interfaces/Result';
 import { IStandingsResponse } from '../interfaces/StandingsResponse';
 import { logger } from '../utils/logger';
 import { mapCols } from '../utils/mapCols';
 import StandingsModel from './models/StandingsModel';
 
-client;
 export const fetchStandings = async (competitionId: number) => {
-  // TODO
-  competitionId = 46302; //42122;
+  if (!competitionId) {
+    logger.error('fetchStandings: No competition id given!');
+    return new Promise(() => []);
+  }
 
   const url = `https://www.mordrek.com:666/api/v1/queries?req={%22compStandings%22:{%22id%22:%22compStandings%22,%22idmap%22:{%22idcompetition%22:%22${competitionId}%22}}}`;
 
@@ -22,18 +22,19 @@ export const fetchStandings = async (competitionId: number) => {
     return mapCols(cols, row);
   });
 
-  await StandingsModel.deleteMany({});
-
   // Add each row in the standings to the database
   await Promise.all(
     standings.map(async (standing) => {
       logger.info(`Added standings for ${standing.team_name}`);
-      await StandingsModel.create(standing);
+
+      // Update or insert standing in the database
+      await StandingsModel.updateOne(
+        { idteam: standing.idteam },
+        {},
+        { upsert: true }
+      );
     })
   );
 
   return standings;
 };
-/*
-(async () => await fetchStandings(46302))();
-*/

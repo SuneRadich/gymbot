@@ -31,16 +31,16 @@ export const buildMatchReport = async (result: IGame | null) => {
 
   const buildMarkup = () => {
     return `
-  TV    ${home.team_value} ${away.team_value}
-  TD    ${home.td} ${away.td}
-  Comp  ${home.completions} ${away.completions}
-  Int   ${home.interceptions} ${away.interceptions}
-  Blk   ${home.blocks_for} ${away.blocks_for}
-  AvBr  ${home.breaks_for} ${away.breaks_for}
-  Cas   ${home.casualties_for} ${away.casualties_for}
-  Kills ${home.kills_for} ${away.kills_for}
-  Surf  ${home.pushouts} ${away.pushouts}
-  Pos   ${home.possession} ${away.possession}`;
+TV    ${home.team_value} ${away.team_value}
+TD    ${home.td} ${away.td}
+Comp  ${home.completions} ${away.completions}
+Int   ${home.interceptions} ${away.interceptions}
+Blk   ${home.blocks_for} ${away.blocks_for}
+AvBr  ${home.breaks_for} ${away.breaks_for}
+Cas   ${home.casualties_for} ${away.casualties_for}
+Kills ${home.kills_for} ${away.kills_for}
+Surf  ${home.pushouts} ${away.pushouts}
+Pos   ${home.possession} ${away.possession}`;
   };
 
   const markup = buildMarkup();
@@ -89,7 +89,7 @@ export const buildMatchReport = async (result: IGame | null) => {
     .addField(
       'Match report',
       `
-\`\`\`css${markup}\`\`\``
+\`\`\`ml${markup}\`\`\``
     )
     /*
      * Inline fields may not display as inline if the thumbnail and/or image is too big.

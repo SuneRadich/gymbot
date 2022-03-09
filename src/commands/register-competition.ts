@@ -27,10 +27,11 @@ export const registerCompetition: ICommand = {
 
       const channel = interaction.channelId;
 
-      await ChannelCompetition.create({
-        channelId: channel,
-        competitionId: competitionId,
-      });
+      await ChannelCompetition.updateOne(
+        { channelId: channel },
+        { $set: { competitionId: competitionId } },
+        { upsert: true }
+      );
 
       messageEmbed.addFields({
         name: `Set competitionId`,

@@ -1,15 +1,22 @@
 import StandingsModel, { IStanding } from '../database/models/StandingsModel';
 import { fetchStandings } from '../database/standings';
+import { logger } from '../utils/logger';
 import { trimTeamName } from '../utils/trimTeamName';
 
-export const getStandings = async () => {
+export const getStandings = async (competitionId: number) => {
+  if (!competitionId) {
+    logger.error(`getStandings: No competition id given!`);
+    return [];
+  }
   // Retrieve all standings, sorted by position
-  let result = await StandingsModel.find({}).sort('position');
+  let result = await StandingsModel.find({ idcompetition: competitionId }).sort(
+    'position'
+  );
 
   // nothing in the database
   if (result.length === 0) {
     // fetch data
-    await fetchStandings(46302);
+    await fetchStandings(competitionId);
     // and select it again from the DB
     result = await StandingsModel.find({}).sort('position');
   }
