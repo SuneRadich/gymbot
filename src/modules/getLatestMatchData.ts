@@ -1,16 +1,29 @@
 import { getCompetitionMatches } from '../database/latestMatch';
+import ChannelCompetition from '../database/models/ChannelCompetition';
 import MatchModel from '../database/models/MatchModel';
+import { logger } from '../utils/logger';
 
 export const getLatestMatchData = async () => {
   let matchData = await MatchModel.find().sort('-finished').limit(1);
+  const channelCompetitions = await ChannelCompetition.find({});
 
-  // nothing in the database
-  if (matchData.length === 0) {
-    // fetch data
-    await getCompetitionMatches(46302);
-    // and select it again from the DB
-    matchData = await MatchModel.find({}).sort('-finished').limit(1);
+  // Loop over all channel registrations, and fetch the corresponding data
+  channelCompetitions.forEach(async (channelCompetition) => {
+    // nothing in the database
+    if (matchData.length === 0) {
+      // fetch data
+      await getCompetitionMatches(channelCompetition.competitionId);
+      // and select it again from the DB
+      matchData = await MatchModel.find({}).sort('-finished').limit(1);
+    }
+  });
+
+  if (channelCompetitions.length === 0) {
+    logger.error('No competitions in the database! Nothing to get');
+    return [];
   }
 
   return matchData;
 };
+
+// (async () => await getLatestMatchData())();

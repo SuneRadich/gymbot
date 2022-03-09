@@ -41,7 +41,7 @@ const fetchMatchById = async (matchId: string): Promise<IGame | null> => {
 
   const toDb: IGame = {
     finished: result[0].finished,
-    competitionId: result[0].idcompetition,
+    competitionId: Number(result[0].idcompetition),
     matchId: result[0].idmatch,
     home: null,
     away: null,
@@ -64,7 +64,10 @@ const fetchMatchById = async (matchId: string): Promise<IGame | null> => {
 export const getCompetitionMatches = async (competitionId: number) => {
   let foundNewMatches = false;
 
-  competitionId = 46302; //42122;
+  if (!competitionId) {
+    logger.error('getCompetitionMatches: No competition id given');
+  }
+  competitionId = competitionId; //46302; //42122;
 
   const url = `https://www.mordrek.com:666/api/v1/queries?req={%22compResults%22:{%22id%22:%22compResults%22,%22idmap%22:{%22idcompetition%22:%22${competitionId}%22},%22filters%22:null,%22ordercol%22:%22finished%22,%22order%22:%22desc%22,%22limit%22:30,%22from%22:0,%22group%22:null,%22aggr%22:null}}`;
 
@@ -93,9 +96,15 @@ export const getCompetitionMatches = async (competitionId: number) => {
         // Add new match to db
         await MatchModel.create(matchData);
 
-        // Show the match in the chat
-        const report = await buildMatchReport(matchData);
-        report ? sendMatchReport(report) : logger.error('No report to send');
+        const competitionId = matchData?.competitionId;
+
+        if (competitionId) {
+          // Show the match in the chat
+          const report = await buildMatchReport(matchData);
+          report
+            ? sendMatchReport(report, competitionId)
+            : logger.error('No report to send');
+        }
       }
     })
   );
