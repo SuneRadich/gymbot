@@ -41,7 +41,7 @@ const fetchMatchById = async (matchId: string): Promise<IGame | null> => {
 
   const toDb: IGame = {
     finished: result[0].finished,
-    competitionId: result[0].idcompetition,
+    competitionId: Number(result[0].idcompetition),
     matchId: result[0].idmatch,
     home: null,
     away: null,
@@ -96,9 +96,15 @@ export const getCompetitionMatches = async (competitionId: number) => {
         // Add new match to db
         await MatchModel.create(matchData);
 
-        // Show the match in the chat
-        const report = await buildMatchReport(matchData);
-        report ? sendMatchReport(report) : logger.error('No report to send');
+        const competitionId = matchData?.competitionId;
+
+        if (competitionId) {
+          // Show the match in the chat
+          const report = await buildMatchReport(matchData);
+          report
+            ? sendMatchReport(report, competitionId)
+            : logger.error('No report to send');
+        }
       }
     })
   );

@@ -93,7 +93,7 @@ export interface IMatch extends Result {
 
 export interface IGame extends Document {
   matchId: string;
-  competitionId: string;
+  competitionId: number;
   finished: string;
   home: IMatch | null;
   away: IMatch | null;
@@ -193,7 +193,7 @@ const MatchType = {
 export const Match = new Schema({
   matchId: String,
   finished: String,
-  competitionId: String,
+  competitionId: Number,
   home: MatchType,
   away: MatchType,
 });
