@@ -1,6 +1,7 @@
 import StandingsModel, { IStanding } from '../database/models/StandingsModel';
 import { fetchStandings } from '../database/standings';
 import { logger } from '../utils/logger';
+import { padStringToLength } from '../utils/padStringToLength';
 import { trimTeamName } from '../utils/trimTeamName';
 
 export const getStandings = async (competitionId: number) => {
@@ -34,20 +35,11 @@ export const getStandings = async (competitionId: number) => {
       return a.team_name.length > b.team_name.length ? a : b;
     });
 
+    // Pad team_name with spaces, so they all have the same length
     data.forEach((row) => {
       const base = longest.team_name.trim();
-      const diff = base.length - row.team_name.length;
 
-      if (diff > 0) {
-        const spacerLength = new Array(diff);
-
-        let spacer = '';
-
-        [...spacerLength].forEach(() => {
-          spacer += ' ';
-        });
-        row.team_name += spacer;
-      }
+      row.team_name = padStringToLength(row.team_name, base.length, false);
     });
   };
 

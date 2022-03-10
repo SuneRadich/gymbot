@@ -1,7 +1,7 @@
 import { MessageEmbed, TextChannel } from 'discord.js';
 import { client } from '..';
 import { IGame } from '../database/models/MatchModel';
-import { padStringToLength } from '../utils/makeSameLength';
+import { padStringToLength } from '../utils/padStringToLength';
 
 /* const getSkill = (name: string) => {
   return client.emojis.cache.find((emoji) => emoji.name === name);
@@ -35,7 +35,6 @@ export const buildMatchReport = async (result: IGame | null) => {
 
   const buildMarkup = () => {
     const homeLength = home.team_value.length;
-    const awayLength = away.team_value.length;
 
     // prettier-ignore
     return `
