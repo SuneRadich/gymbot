@@ -2,10 +2,10 @@ import { MessageEmbed, TextChannel } from 'discord.js';
 import { client } from '..';
 import { IGame } from '../database/models/MatchModel';
 
-const getSkill = (name: string) => {
+/* const getSkill = (name: string) => {
   return client.emojis.cache.find((emoji) => emoji.name === name);
 };
-
+ */
 const getLogo = (name: string) => {
   return client.emojis.cache.find((emoji) => {
     return emoji.name === `Logo_${name}`;
