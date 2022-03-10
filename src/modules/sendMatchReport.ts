@@ -1,6 +1,7 @@
 import { MessageEmbed, TextChannel } from 'discord.js';
 import { client } from '..';
 import { IGame } from '../database/models/MatchModel';
+import { padStringToLength } from '../utils/makeSameLength';
 
 /* const getSkill = (name: string) => {
   return client.emojis.cache.find((emoji) => emoji.name === name);
@@ -33,17 +34,21 @@ export const buildMatchReport = async (result: IGame | null) => {
   }
 
   const buildMarkup = () => {
+    const homeLength = home.team_value.length;
+    const awayLength = away.team_value.length;
+
+    // prettier-ignore
     return `
-TV    ${home.team_value} ${away.team_value}
-TD    ${home.td} ${away.td}
-Comp  ${home.completions} ${away.completions}
-Int   ${home.interceptions} ${away.interceptions}
-Blk   ${home.blocks_for} ${away.blocks_for}
-AvBr  ${home.breaks_for} ${away.breaks_for}
-Cas   ${home.casualties_for} ${away.casualties_for}
-Kills ${home.kills_for} ${away.kills_for}
-Surf  ${home.pushouts} ${away.pushouts}
-Pos   ${home.possession} ${away.possession}`;
+Team value    ${padStringToLength(home.team_value, homeLength)} ${away.team_value}
+Touch downs   ${padStringToLength(home.td, homeLength)} ${away.td}
+Completions   ${padStringToLength(home.completions, homeLength)} ${away.completions}
+Interceptions ${padStringToLength(home.interceptions, homeLength)} ${away.interceptions}
+Blocks        ${padStringToLength(home.blocks_for, homeLength)} ${away.blocks_for}
+Armor breaks  ${padStringToLength(home.breaks_for, homeLength)} ${away.breaks_for}
+Casualties    ${padStringToLength(home.casualties_for, homeLength)} ${away.casualties_for}
+Kills         ${padStringToLength(home.kills_for, homeLength)} ${away.kills_for}
+Surf          ${padStringToLength(home.pushouts, homeLength)} ${away.pushouts}
+Possession    ${padStringToLength(home.possession, homeLength)} ${away.possession}`;
   };
 
   const markup = buildMarkup();
@@ -70,7 +75,7 @@ Pos   ${home.possession} ${away.possession}`;
     /*
      * Alternatively, use "#3498DB", [52, 152, 219] or an integer number.
      */
-    .setColor(0x3498db)
+    .setColor(0xd9aa3b)
     .setTitle(
       `${homeTeam} ${getLogo(homeLogo || 'Ai_01')} vs ${getLogo(
         awayLogo || 'Ai_01'
@@ -90,7 +95,7 @@ Pos   ${home.possession} ${away.possession}`;
     .addField(
       'Match report',
       `
-\`\`\`ml${markup}\`\`\``
+\`\`\`hy${markup}\`\`\``
     )
     .setTimestamp(new Date(finished));
 
