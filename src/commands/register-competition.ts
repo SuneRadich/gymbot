@@ -1,8 +1,6 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { MessageEmbed } from 'discord.js';
 import ChannelCompetition from '../database/models/ChannelCompetition';
 import { ICommand } from '../interfaces/Command';
-import { logger } from '../utils/logger';
 
 export const registerCompetition: ICommand = {
   data: new SlashCommandBuilder()
@@ -15,34 +13,28 @@ export const registerCompetition: ICommand = {
         .setRequired(true)
     ),
   run: async (interaction) => {
-    await interaction.deferReply();
+    //await interaction.deferReply();
 
-    const messageEmbed = new MessageEmbed();
+    let competitionId = null;
+    //try {
+    // Grab the entered competition id
+    competitionId = interaction.options.getString('competitionid', true);
 
-    try {
-      // Grab the entered competition id
-      const competitionId = interaction.options.getString(
-        'competitionid',
-        true
-      );
+    const channel = interaction.channelId;
 
-      const channel = interaction.channelId;
+    await ChannelCompetition.updateOne(
+      { channelId: channel },
+      { $set: { competitionId: competitionId } },
+      { upsert: true }
+    );
+    //} catch (err) {
+    //  logger.error(err);
+    // }
 
-      await ChannelCompetition.updateOne(
-        { channelId: channel },
-        { $set: { competitionId: competitionId } },
-        { upsert: true }
-      );
-
-      messageEmbed.addFields({
-        name: `Set competitionId`,
-        value: `New competition id to follow is: ${competitionId}`,
-        inline: false,
-      });
-    } catch (err) {
-      logger.error(err);
-    }
-
-    await interaction.editReply({ embeds: [messageEmbed] });
+    await interaction.reply({
+      content: `New competition id to follow is: ${competitionId}`,
+      // Send message only the user that requested it can see
+      ephemeral: true,
+    });
   },
 };
