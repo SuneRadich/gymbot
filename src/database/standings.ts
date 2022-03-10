@@ -30,7 +30,7 @@ export const fetchStandings = async (competitionId: number) => {
       // Update or insert standing in the database
       await StandingsModel.updateOne(
         { idteam: standing.idteam },
-        {},
+        { ...standing },
         { upsert: true }
       );
     })
