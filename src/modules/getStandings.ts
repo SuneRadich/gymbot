@@ -27,7 +27,7 @@ export const getStandings = async (competitionId: number) => {
   });
 
   /**
-   * Pad the string ofr team names with spaces, so that they have the same length as the longest
+   * Pad the team names with spaces, so that they have the same length as the longest
    * team name
    */
   const padAllTeamNames = (data: IStanding[]) => {
@@ -35,11 +35,11 @@ export const getStandings = async (competitionId: number) => {
       return a.team_name.length > b.team_name.length ? a : b;
     });
 
-    // Pad team_name with spaces, so they all have the same length
+    // Pad team_name with spaces
     data.forEach((row) => {
       const base = longest.team_name.trim();
 
-      row.team_name = padStringToLength(row.team_name, base.length, false);
+      row.team_name = padStringToLength(row.team_name, base.length, true);
     });
   };
 

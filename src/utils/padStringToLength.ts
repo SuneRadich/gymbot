@@ -4,7 +4,7 @@
 export const padStringToLength = (
   text: string,
   stringLength: number,
-  asPrefix = true
+  asSuffix = false
 ): string => {
   const padding = Array(stringLength - text.length);
 
@@ -14,9 +14,9 @@ export const padStringToLength = (
     spacer += ' ';
   });
 
-  if (asPrefix) {
-    return spacer + text;
-  } else {
+  if (asSuffix) {
     return text + spacer;
+  } else {
+    return spacer + text;
   }
 };
