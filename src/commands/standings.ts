@@ -14,7 +14,7 @@ export const latest: ICommand = {
   run: async (interaction) => {
     await interaction.deferReply();
 
-    const season = 'Season 5';
+    const season = 'Season 6';
 
     const channelCompetition = await ChannelCompetition.findOne({
       channelId: interaction.channelId,
