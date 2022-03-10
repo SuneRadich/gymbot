@@ -9,7 +9,7 @@ import MatchModel, { IGame, IMatch } from './models/MatchModel';
 import { fetchStandings } from './standings';
 
 /**
- * Check if a match (2 entries) exist in the database already
+ * Check if a match exist in the database already
  *
  * @param idmatch
  * @returns
@@ -67,7 +67,6 @@ export const getCompetitionMatches = async (competitionId: number) => {
   if (!competitionId) {
     logger.error('getCompetitionMatches: No competition id given');
   }
-  competitionId = competitionId; //46302; //42122;
 
   const url = `https://www.mordrek.com:666/api/v1/queries?req={%22compResults%22:{%22id%22:%22compResults%22,%22idmap%22:{%22idcompetition%22:%22${competitionId}%22},%22filters%22:null,%22ordercol%22:%22finished%22,%22order%22:%22desc%22,%22limit%22:30,%22from%22:0,%22group%22:null,%22aggr%22:null}}`;
 

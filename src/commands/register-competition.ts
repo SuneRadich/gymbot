@@ -20,6 +20,7 @@ export const registerCompetition: ICommand = {
     const messageEmbed = new MessageEmbed();
 
     try {
+      // Grab the entered competition id
       const competitionId = interaction.options.getString(
         'competitionid',
         true
