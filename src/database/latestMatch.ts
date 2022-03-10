@@ -77,6 +77,7 @@ export const getCompetitionMatches = async (competitionId: number) => {
   const matchOverview = data.response.compResults.result.rows;
 
   await Promise.all(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     matchOverview.map(async (match: any[]) => {
       // We know the first row item is the match Id
       const matchId = match[0];
@@ -116,9 +117,3 @@ export const getCompetitionMatches = async (competitionId: number) => {
 
   return null;
 };
-
-/*
-(async () => {
-  await getCompetitionMatches(46302);
-})();
-*/
