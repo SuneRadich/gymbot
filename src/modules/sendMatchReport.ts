@@ -1,3 +1,4 @@
+import { format } from 'date-fns';
 import { MessageEmbed, TextChannel } from 'discord.js';
 import { client } from '..';
 import { IGame } from '../database/models/MatchModel';
@@ -96,7 +97,13 @@ Possession    ${padStringToLength(home.possession, homeLength)} ${away.possessio
       `
 \`\`\`hy${markup}\`\`\``
     )
-    .setTimestamp(new Date(finished));
+    // prettier-ignore
+    .setFooter({
+      text: `${format(new Date(finished), 'dd-MM-yyyy')} @ ${format(
+        new Date(finished),
+        'kk:mm'
+      )}`,
+    });
 
   return embed;
 };
