@@ -10,7 +10,7 @@ export const registerCompetition: ICommand = {
     .addStringOption((option) =>
       option
         .setName('competitionid')
-        .setDescription('The message to go in your 100 Days of Code update.')
+        .setDescription('The GoblinSpy competitionId')
         .setRequired(true)
     ),
   run: async (interaction) => {
