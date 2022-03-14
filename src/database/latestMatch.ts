@@ -1,10 +1,12 @@
 import fetch from 'node-fetch';
+import { client } from '..';
 import { ICompetitionResponse } from '../interfaces/CompetitionResponse';
 import { IMatchResponse } from '../interfaces/MatchResponse';
 import { Result } from '../interfaces/Result';
 import { buildMatchReport, sendMatchReport } from '../modules/sendMatchReport';
 import { logger } from '../utils/logger';
 import { mapCols } from '../utils/mapCols';
+import ChannelCompetition from './models/ChannelCompetition';
 import MatchModel, { IGame, IMatch } from './models/MatchModel';
 import { fetchStandings } from './standings';
 
@@ -98,11 +100,18 @@ export const getCompetitionMatches = async (competitionId: number) => {
 
         const competitionId = matchData?.competitionId;
 
-        if (competitionId) {
+        const botId = client.application?.id;
+
+        const channel = await ChannelCompetition.findOne({
+          competitionId: competitionId,
+          applicationId: botId,
+        });
+
+        if (competitionId && channel?.channelId) {
           // Show the match in the chat
           const report = await buildMatchReport(matchData);
           report
-            ? sendMatchReport(report, competitionId)
+            ? sendMatchReport(report, channel?.channelId)
             : logger.error('No report to send');
         }
       }
