@@ -15,10 +15,10 @@ const getLogo = (name: string) => {
 
 export const sendMatchReport = async (
   embed: MessageEmbed,
-  channelId: number
+  channelId: string
 ) => {
   const channel: TextChannel = (await client.channels.cache.get(
-    String(channelId)
+    channelId
   )) as TextChannel;
 
   channel?.send({ embeds: [embed] });

@@ -1,5 +1,6 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { Permissions } from 'discord.js';
+import * as NewGames from '../cron/newGames';
 import ChannelCompetition from '../database/models/ChannelCompetition';
 import { ICommand } from '../interfaces/Command';
 
@@ -19,15 +20,25 @@ export const registerCompetition: ICommand = {
     // Grab the entered competition id
     competitionId = interaction.options.getString('competitionid', true);
 
+    const applicationId = interaction.applicationId;
+
     // Check if the user is in fact an administrator
     if (interaction.memberPermissions?.has(Permissions.FLAGS.ADMINISTRATOR)) {
       const channel = interaction.channelId;
 
       await ChannelCompetition.updateOne(
-        { channelId: channel },
-        { $set: { competitionId: competitionId } },
+        { channelId: channel, applicationId: applicationId },
+        {
+          channelId: channel,
+          applicationId: applicationId,
+          competitionId: Number(competitionId),
+        },
         { upsert: true }
       );
+
+      // Restart fetching loop with new set of id's
+      NewGames.killFetcher();
+      NewGames.startFetcher();
 
       await interaction.reply({
         content: `New competition id to follow is: ${competitionId}`,
