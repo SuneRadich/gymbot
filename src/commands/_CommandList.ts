@@ -1,4 +1,5 @@
 import { ICommand } from '../interfaces/Command';
+import { listCompetitions } from './list-competitions';
 import { match } from './match';
 import { registerCompetition } from './register-competition';
 import { sendInvite } from './send-invite';
@@ -9,4 +10,5 @@ export const CommandList: ICommand[] = [
   match,
   latest,
   sendInvite,
+  listCompetitions,
 ];
