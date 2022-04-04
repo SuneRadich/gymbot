@@ -1,13 +1,16 @@
 import { Document, model, Schema } from 'mongoose';
 
 export interface IChannelCompetition extends Document {
-  competitionId: number;
+  leagueName: string;
+  competitionName: string;
+  /** Discord channel id */
   channelId: string;
   applicationId: string;
 }
 
 export const ChannelCompetition = new Schema({
-  competitionId: Number,
+  leagueName: String,
+  competitionName: String,
   channelId: String,
   applicationId: String,
 });
