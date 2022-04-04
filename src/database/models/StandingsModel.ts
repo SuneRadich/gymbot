@@ -44,4 +44,4 @@ export const Standing = new Schema({
   },
 });
 
-export default model<IStanding>('standingCyanide', Standing);
+export default model<IStanding>('standing', Standing);
