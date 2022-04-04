@@ -14,5 +14,9 @@ export const validateEnv = () => {
   if (!process.env.CLIENT_ID) {
     logger.warn('Missing Client id');
   }
+
+  if (!process.env.CYANIDE_API_KEY) {
+    logger.warn('Missing api key');
+  }
   return true;
 };
