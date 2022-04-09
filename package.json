@@ -12,7 +12,7 @@
     "logo": "ts-node -r dotenv/config  ./src/database/updateLogos.ts",
     "standings": "ts-node -r dotenv/config  ./src/database/standings.ts",
     "api": "ts-node -r dotenv/config ./src/modules/getLatestMatchData.ts",
-    "website": "npx http-server ./public"
+    "website": "npx http-server ./public --port 80"
   },
   "repository": {
     "type": "git",
