@@ -7,7 +7,7 @@ import { latest } from './standings';
 
 export const CommandList: ICommand[] = [
   registerCompetition,
-  match,
+  // match,
   latest,
   sendInvite,
   listCompetitions,

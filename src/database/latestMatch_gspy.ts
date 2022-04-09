@@ -1,14 +1,8 @@
 import fetch from 'node-fetch';
-import { client } from '..';
-import { ICompetitionResponse } from '../interfaces/CompetitionResponse';
-import { IMatchResponse } from '../interfaces/MatchResponse';
+import { IMatchResponse } from '../interfaces/MatchResponse_gspy';
 import { Result } from '../interfaces/Result';
-import { buildMatchReport, sendMatchReport } from '../modules/sendMatchReport';
-import { logger } from '../utils/logger';
 import { mapCols } from '../utils/mapCols';
-import ChannelCompetition from './models/ChannelCompetition';
-import MatchModel, { IGame, IMatch } from './models/MatchModel';
-import { fetchStandings } from './standings';
+import MatchModel, { IGame, IMatch } from './models/MatchModel_gspy';
 
 /**
  * Check if a match exist in the database already
@@ -63,11 +57,13 @@ const fetchMatchById = async (matchId: string): Promise<IGame | null> => {
 /**
  * Fetch matches from GoblinSpy and store in DB
  */
-export const getCompetitionMatches = async (competitionId: number) => {
-  let foundNewMatches = false;
+export const getCompetitionMatches = async (competitionName: string) => {
+  const foundNewMatches = false;
 
-  if (!competitionId) {
-    logger.error('getCompetitionMatches: No competition id given');
+  console.log('getCompetitionMatches dummy');
+  /*
+  if (!competitionName) {
+    logger.error('getCompetitionMatches: No competition name given');
   }
 
   const url = `https://www.mordrek.com:666/api/v1/queries?req={%22compResults%22:{%22id%22:%22compResults%22,%22idmap%22:{%22idcompetition%22:%22${competitionId}%22},%22filters%22:null,%22ordercol%22:%22finished%22,%22order%22:%22desc%22,%22limit%22:30,%22from%22:0,%22group%22:null,%22aggr%22:null}}`;
@@ -120,8 +116,8 @@ export const getCompetitionMatches = async (competitionId: number) => {
 
   if (foundNewMatches) {
     // We just added new matches, so fetch updated standings
-    fetchStandings(competitionId);
+    fetchStandings(competitionName);
   }
-
+*/
   return null;
 };

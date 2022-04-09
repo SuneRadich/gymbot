@@ -1,7 +1,8 @@
 import { format } from 'date-fns';
 import { MessageEmbed, TextChannel } from 'discord.js';
 import { client } from '..';
-import { IGame } from '../database/models/MatchModel';
+import { IMatch } from '../database/models/MatchModel';
+import { Match } from '../interfaces/MatchReponse';
 import { padStringToLength } from '../utils/padStringToLength';
 
 /* const getSkill = (name: string) => {
@@ -15,9 +16,13 @@ const getLogo = (name: string) => {
 };
 
 export const sendMatchReport = async (
-  embed: MessageEmbed,
+  embed: MessageEmbed | undefined,
   channelId: string
 ) => {
+  if (!embed) {
+    return;
+  }
+
   const channel: TextChannel = (await client.channels.cache.get(
     channelId
   )) as TextChannel;
@@ -25,56 +30,49 @@ export const sendMatchReport = async (
   channel?.send({ embeds: [embed] });
 };
 
-export const buildMatchReport = async (result: IGame | null) => {
+export const buildMatchReport = async (result: Match | null) => {
   if (!result) return;
 
-  const { home, away, matchId, competitionId, finished } = result;
+  const { finished } = result;
+
+  const home = result.teams[0];
+  const homeCoach = result.coaches[0];
+
+  const away = result.teams[1];
+  const awayCoach = result.coaches[1];
 
   if (!(home && away)) {
     return;
   }
 
   const buildMarkup = () => {
-    const homeLength = home.team_value.length;
+    const homeLength = String(home.value).length;
 
     // prettier-ignore
     return `
-Team value    ${padStringToLength(home.team_value, homeLength)} ${away.team_value}
-Touch downs   ${padStringToLength(home.td, homeLength)} ${away.td}
-Completions   ${padStringToLength(home.completions, homeLength)} ${away.completions}
-Interceptions ${padStringToLength(home.interceptions, homeLength)} ${away.interceptions}
-Blocks        ${padStringToLength(home.blocks_for, homeLength)} ${away.blocks_for}
-Armor breaks  ${padStringToLength(home.breaks_for, homeLength)} ${away.breaks_for}
-Casualties    ${padStringToLength(home.casualties_for, homeLength)} ${away.casualties_for}
-Kills         ${padStringToLength(home.kills_for, homeLength)} ${away.kills_for}
-Surf          ${padStringToLength(home.pushouts, homeLength)} ${away.pushouts}
-Possession    ${padStringToLength(home.possession, homeLength)} ${away.possession}`;
+Team value    ${padStringToLength(String(home.value), homeLength)} ${away.value}
+Touchdowns    ${padStringToLength(String(home.inflictedtouchdowns), homeLength)} ${away.inflictedtouchdowns}
+Completions   ${padStringToLength(String(home.inflictedpasses), homeLength)} ${away.inflictedpasses}
+Interceptions ${padStringToLength(String(home.inflictedinterceptions), homeLength)} ${away.inflictedinterceptions}
+Blocks        ${padStringToLength(String(home.inflictedtackles), homeLength)} ${away.inflictedtackles}
+Armor breaks  ${padStringToLength(String(home.inflictedinjuries), homeLength)} ${away.inflictedinjuries}
+Casualties    ${padStringToLength(String(home.inflictedcasualties), homeLength)} ${away.inflictedcasualties}
+Kills         ${padStringToLength(String(home.inflicteddead), homeLength)} ${away.inflicteddead}
+Surf          ${padStringToLength(String(home.inflictedpushouts), homeLength)} ${away.inflictedpushouts}
+Possession    ${padStringToLength(String(home.possessionball), homeLength)} ${away.possessionball}`;
   };
 
   const markup = buildMarkup();
 
-  const {
-    team_name: homeTeam,
-    coach_name: homeCoach,
-    logo: homeLogo,
-    idcoach: homeCoachId,
-  } = home;
+  const { teamname: homeTeam, teamlogo: homeLogo } = home;
 
-  const {
-    team_name: awayTeam,
-    coach_name: awayCoach,
-    logo: awayLogo,
-    idcoach: awayCoachId,
-  } = away;
+  const { teamname: awayTeam, teamlogo: awayLogo } = away;
 
   const leagueLogo = await client.emojis.cache.find(
     (emoji) => emoji.name === 'Logo_Human_14'
   );
 
   const embed = new MessageEmbed()
-    /*
-     * Alternatively, use "#3498DB", [52, 152, 219] or an integer number.
-     */
     .setColor(0xd9aa3b)
     .setTitle(
       `${homeTeam} ${getLogo(homeLogo || 'Ai_01')} vs ${getLogo(
@@ -82,15 +80,11 @@ Possession    ${padStringToLength(home.possession, homeLength)} ${away.possessio
       )} ${awayTeam}`
     )
     .setThumbnail(leagueLogo ? leagueLogo.url : '')
-    .setURL(
-      `https://www.mordrek.com/gspy/comp/${competitionId}/match/${matchId}`
-    )
+    //.setURL(
+    //  `https://www.mordrek.com/gspy/comp/${competitionId}/match/${matchId}`
+    //)
     .setDescription(
-      `[${
-        homeCoach || 'AI'
-      }](https://www.mordrek.com/gspy/comp/${competitionId}/coach/${homeCoachId}) - [${
-        awayCoach || 'AI'
-      }](https://www.mordrek.com/gspy/comp/${competitionId}/coach/${awayCoachId})`
+      `${homeCoach.coachname || 'AI'}- ${awayCoach.coachname || 'AI'}`
     )
     .addField(
       'Match report',

@@ -1,6 +1,6 @@
-import { getCompetitionMatches } from '../database/latestMatch';
+import { getCompetitionMatches } from '../database/latestMatch_gspy';
 import ChannelCompetition from '../database/models/ChannelCompetition';
-import MatchModel from '../database/models/MatchModel';
+import MatchModel from '../database/models/MatchModel_gspy';
 import { logger } from '../utils/logger';
 
 export const getLatestMatchData = async () => {
@@ -12,7 +12,7 @@ export const getLatestMatchData = async () => {
     // nothing in the database
     if (matchData.length === 0) {
       // fetch data
-      await getCompetitionMatches(channelCompetition.competitionId);
+      await getCompetitionMatches(channelCompetition.competitionName);
       // and select it again from the DB
       matchData = await MatchModel.find({}).sort('-finished').limit(1);
     }
