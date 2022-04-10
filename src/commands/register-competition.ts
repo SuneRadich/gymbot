@@ -2,6 +2,7 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import { Permissions } from 'discord.js';
 import ChannelCompetition from '../database/models/ChannelCompetition';
 import { ICommand } from '../interfaces/Command';
+import * as NewGames from '../cron/newGames';
 
 export const registerCompetition: ICommand = {
   data: new SlashCommandBuilder()
@@ -46,8 +47,8 @@ export const registerCompetition: ICommand = {
       );
 
       // Restart fetching loop with new set of id's
-      //NewGames.killFetcher();
-      //NewGames.startFetcher();
+      NewGames.killFetcher();
+      NewGames.startFetcher();
 
       await interaction.reply({
         content: `New competition to follow: ${competitionName}`,
