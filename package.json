@@ -13,7 +13,7 @@
     "standings": "ts-node -r dotenv/config  ./src/database/standingsCyanide.ts",
     "matches": "ts-node -r dotenv/config ./src/database/getMatches.ts",
     "api": "ts-node -r dotenv/config ./src/modules/getLatestMatchData.ts",
-    "mef": "ts-node -r dotenv/config ./src/cron/newGames.ts"
+    "website": "npx http-server ./public"
   },
   "repository": {
     "type": "git",
