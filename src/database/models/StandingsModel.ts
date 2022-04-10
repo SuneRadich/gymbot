@@ -1,65 +1,47 @@
 import { Document, model, Schema } from 'mongoose';
 
 export interface IStanding extends Document {
-  idstanding: string;
-  idcompetition: string;
-  ranking: string;
-  points: string;
-  sorting: string;
-  active: string;
-  wins: string;
-  draws: string;
-  losses: string;
-  td: string;
-  td_opp: string;
-  td_diff: string;
-  cas: string;
-  cas_opp: string;
-  cas_diff: string;
-  concedes: string;
-  team_value: string;
-  kills: string;
-  position: string;
-  gp: string;
-  idteam: string;
-  idrace: string;
-  team_name: string;
+  league: string;
+  competition: string;
+  rank: number;
+  name: string;
+  id: number;
+  tv: number;
+  score: number;
+  race_id: number;
+  race: string;
   logo: string;
-  twitch: string;
-  youtube: string;
-  idcoach: string;
-  coach_name: string;
+  win: number;
+  draw: number;
+  loss: number;
+  coach: {
+    name: string;
+    id: number;
+    lang: string;
+    country: string;
+  };
 }
 
 export const Standing = new Schema({
-  idstanding: String,
-  idcompetition: String,
-  ranking: String,
-  points: String,
-  sorting: String,
-  active: String,
-  wins: String,
-  draws: String,
-  losses: String,
-  td: String,
-  td_opp: String,
-  td_diff: String,
-  cas: String,
-  cas_opp: String,
-  cas_diff: String,
-  concedes: String,
-  team_value: String,
-  kills: String,
-  position: String,
-  gp: String,
-  idteam: String,
-  idrace: String,
-  team_name: String,
+  league: String,
+  competition: String,
+  rank: Number,
+  name: String,
+  id: Number,
+  tv: Number,
+  score: Number,
+  race_id: Number,
+  race: String,
   logo: String,
-  twitch: String,
-  youtube: String,
-  idcoach: String,
-  coach_name: String,
+  win: Number,
+  draw: Number,
+  loss: Number,
+  coach: {
+    name: String,
+    id: Number,
+    lang: String,
+    country: String,
+  },
 });
 
 export default model<IStanding>('standing', Standing);

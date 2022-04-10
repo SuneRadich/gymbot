@@ -2,8 +2,8 @@ import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
 import { Client } from 'discord.js';
 import { CommandList } from '../commands/_CommandList';
-import * as NewGames from '../cron/newGames';
 import { logger } from '../utils/logger';
+import * as NewGames from '../cron/newGames';
 
 export const onReady = async (client: Client) => {
   const rest = new REST({ version: '9' }).setToken(

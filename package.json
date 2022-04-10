@@ -10,7 +10,8 @@
     "latest": "ts-node -r dotenv/config ./src/database/latestMatch.ts",
     "start": "ts-node -r dotenv/config ./src/index.ts",
     "logo": "ts-node -r dotenv/config  ./src/database/updateLogos.ts",
-    "standings": "ts-node -r dotenv/config  ./src/database/standings.ts",
+    "standings": "ts-node -r dotenv/config  ./src/database/standingsCyanide.ts",
+    "matches": "ts-node -r dotenv/config ./src/database/getMatches.ts",
     "api": "ts-node -r dotenv/config ./src/modules/getLatestMatchData.ts",
     "website": "npx http-server ./public"
   },

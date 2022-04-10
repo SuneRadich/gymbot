@@ -1,36 +1,46 @@
 import fetch from 'node-fetch';
-import { Result } from '../interfaces/Result';
-import { IStandingsResponse } from '../interfaces/StandingsResponse';
+import { IStandingsResponse, Ranking } from '../interfaces/StandingsResponse';
 import { logger } from '../utils/logger';
-import { mapCols } from '../utils/mapCols';
-import StandingsModel from './models/StandingsModel';
+import { connectDatabase } from './connectDatabase';
+import StandingsModelCyanide from './models/StandingsModel';
 
-export const fetchStandings = async (competitionId: number) => {
-  if (!competitionId) {
-    logger.error('fetchStandings: No competition id given!');
+export const fetchStandings = async (league: string, competition: string) => {
+  await connectDatabase();
+
+  if (!competition || !league) {
+    logger.error('fetchStandings: No competition and/or league name given!');
     return new Promise(() => []);
   }
 
-  const url = `https://www.mordrek.com:666/api/v1/queries?req={%22compStandings%22:{%22id%22:%22compStandings%22,%22idmap%22:{%22idcompetition%22:%22${competitionId}%22}}}`;
+  const api_key = process.env.CYANIDE_API_KEY;
+
+  const url = `https://web.cyanide-studio.com/ws/bb/ladder/?key=${api_key}&platform=pc&league=${league}&competition=${competition}&ladder_size=100`;
 
   const response = await fetch(url);
 
-  const data = (await response.json()) as IStandingsResponse;
-  const { cols, rows } = data.response.compStandings.result;
-
-  const standings = rows.map((row: Result) => {
-    return mapCols(cols, row);
-  });
+  const standings = (await response.json()) as IStandingsResponse;
 
   // Add each row in the standings to the database
   await Promise.all(
-    standings.map(async (standing) => {
-      logger.info(`Added standings for ${standing.team_name}`);
+    standings.ranking.map(async (standing: Ranking) => {
+      const [win, draw, loss] = standing.team['w/d/l'].split('/');
+
+      const data = {
+        league: league,
+        competition: competition,
+        ...standing.team,
+        win,
+        draw,
+        loss,
+        coach: standing.coach,
+      };
+
+      logger.info(`Added standings for ${data.name}`);
 
       // Update or insert standing in the database
-      await StandingsModel.updateOne(
-        { idteam: standing.idteam },
-        { ...standing },
+      await StandingsModelCyanide.updateOne(
+        { id: data.id },
+        { ...data },
         { upsert: true }
       );
     })

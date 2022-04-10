@@ -14,8 +14,6 @@ export const latest: ICommand = {
   run: async (interaction) => {
     await interaction.deferReply();
 
-    const season = 'Season 6';
-
     const channelCompetition = await ChannelCompetition.findOne({
       channelId: interaction.channelId,
     });
@@ -23,34 +21,31 @@ export const latest: ICommand = {
     if (!channelCompetition) {
       logger.error(`No competition registered for this channel!`);
       await interaction.editReply(
-        'No competition registered, use /competition <GoblinSpyCompetitionID> to do so'
+        'No competition registered, use /register-competition <leagueName> <competitionName> to do so'
       );
       return;
     }
 
-    const competitionId = channelCompetition.competitionId;
+    const { leagueName, competitionName } = channelCompetition;
 
-    const standings = await getStandings(channelCompetition?.competitionId);
+    const standings = await getStandings(leagueName, competitionName);
 
     const markup = standings.map((row) => {
-      const { position, points, team_name, wins, draws, losses } = row;
+      const { rank, score, name, win, draw, loss } = row;
 
       // prettier-ignore
-      return `${position}   ${team_name}${padValue(Number(points))}   ${padValue(Number(wins))}  ${padValue(Number(draws))}     ${padValue(Number(losses))}\n`;
+      return `${rank}   ${name}${padValue(Number(score))}   ${padValue(Number(win))}  ${padValue(Number(draw))}     ${padValue(Number(loss))}\n`;
     });
 
     const embed = new MessageEmbed()
-      /*
-       * Alternatively, use "#3498DB", [52, 152, 219] or an integer number.
-       */
       .setColor(0x3498db)
-      .setTitle(`Gymnasiebowl`)
-      .setURL(`https://www.mordrek.com/gspy/comp/${competitionId}`)
+      .setTitle(leagueName)
+      //.setURL(`https://www.mordrek.com/gspy/comp/${competitionName}`)
       // prettier-ignore
       .addField(
-        `Standings for ${season}`,
+        `Standings for ${competitionName}`,
         `\`\`\`hy
-Pos Team${getSpacer(standings, 'team_name', 4)} Pts Win Draw Loss
+Pos Team${getSpacer(standings, 'name', 4)} Pts Win Draw Loss
 ${markup.join('')}\`\`\``
       );
 

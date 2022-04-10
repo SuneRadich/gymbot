@@ -1,4 +1,5 @@
-import { getCompetitionMatches } from '../database/latestMatch';
+import { connectDatabase } from '../database/connectDatabase';
+import { fetchMatches } from '../database/getMatches';
 import ChannelCompetition from '../database/models/ChannelCompetition';
 import { logger } from '../utils/logger';
 
@@ -10,14 +11,9 @@ const interval = numberOfMinutes * 60 * 1000;
 
 /** Start a fetching loop, that runs every {interval} miliseconds, and fetches matches from GoblinSpy */
 export const startFetcher = async () => {
-  // ARray o
-  const compIds: number[] = await (
-    await ChannelCompetition.find({}).select('competitionId')
-  ).map((entry) => {
-    return entry.competitionId;
-  });
+  const competitions = await ChannelCompetition.find({});
 
-  logger.info(`Started fetching new match loop: ${compIds}`);
+  // logger.info(`Started fetching new match loop: ${competitionNames}`);
 
   // Can be enabled to force fetching data on bot start
   // should be replaced by a slash admin command
@@ -25,13 +21,15 @@ export const startFetcher = async () => {
 
   fetcher = setInterval(async () => {
     await Promise.all(
-      compIds.map(async (compId) => {
-        logger.info(`Fetching competition matches for competition ${compId}`);
+      competitions.map(async (competition) => {
+        logger.info(
+          `Fetching competition matches for competition ${competition.competitionName}`
+        );
 
-        return await getCompetitionMatches(compId);
+        // fetch all competition matches, and store them in the database
+        return await fetchMatches(competition);
       })
     );
-    // fetch all competition matches, and store them in the database
   }, interval);
 };
 
