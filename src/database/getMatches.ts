@@ -25,19 +25,22 @@ export const fetchMatches = async (config: IChannelCompetition) => {
 
   const data = (await response.json()) as IMatchResponse;
 
-  data.matches.map(
-    async (match) =>
-      await MatchModel.updateOne(
-        { uuid: match.uuid },
-        { ...match },
-        { upsert: true, new: true }
-      ).then(async (result) => {
-        if (result.upsertedId) {
-          const report = await buildMatchReport(match);
-          sendMatchReport(report, channelId);
-        }
-      })
-  );
+  // If we have data, parse it and add to the database
+  if (data) {
+    data.matches.map(
+      async (match) =>
+        await MatchModel.updateOne(
+          { uuid: match.uuid },
+          { ...match },
+          { upsert: true, new: true }
+        ).then(async (result) => {
+          if (result.upsertedId) {
+            const report = await buildMatchReport(match);
+            sendMatchReport(report, channelId);
+          }
+        })
+    );
+  }
 
   // Add each row in the standings to the database
 
